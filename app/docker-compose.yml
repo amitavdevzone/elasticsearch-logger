@@ -1,0 +1,32 @@
+version: "3"
+services:
+  filebeat:
+    user: root
+    image: docker.elastic.co/beats/filebeat:7.5.0
+    environment:
+      - ELASTIC_USERNAME="${ELASTIC_USERNAME}"
+      - ELASTIC_PASSWORD="${ELASTIC_PASSWORD}"
+      - APP_NAME="${APP_NAME}"
+    volumes:
+      - ".:/var/www/html" # mapping of log file / folder
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: ["--strict.perms=false"]
+    ulimits:
+      memlock:
+        soft: 128
+        hard: 256
+    stdin_open: true
+    tty: true
+    networks:
+      - log
+    deploy:
+      mode: global
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+networks:
+  log:
+    driver: bridge

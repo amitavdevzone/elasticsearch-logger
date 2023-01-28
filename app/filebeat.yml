@@ -1,0 +1,30 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - "/var/www/html/storage/logs/*.log"
+
+output:
+  elasticsearch:
+    hosts:
+      - 192.168.1.192:9200
+    username: "${ELASTIC_USERNAME}"
+    password: "${ELASTIC_PASSWORD}"
+    indices:
+      - index: "app1-log"
+
+logging.json: true
+logging.metrics.enabled: false
+
+logging:
+  files:
+    rotateeverybytes: 10485760
+
+processors:
+  - add_docker_metadata:
+      host: "unix:///host_docker/docker.sock"
+
+  - decode_json_fields:
+      fields: ["message"]
+      target: "json"
+      overwrite_keys: true

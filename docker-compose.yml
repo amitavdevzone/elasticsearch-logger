@@ -10,7 +10,7 @@ services:
       - xpack.security.enabled=true
       - xpack.security.audit.enabled=true
       - xpack.security.authc.api_key.enabled=true
-      - ELASTIC_PASSWORD="${ELASTIC_PASSWORD}"
+      - ELASTIC_PASSWORD=secret@elastic
     ports:
       - "9200:9200"
       - "9300:9300"
